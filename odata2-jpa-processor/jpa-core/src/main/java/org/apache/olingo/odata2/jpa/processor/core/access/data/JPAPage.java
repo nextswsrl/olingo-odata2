@@ -60,7 +60,7 @@ public class JPAPage implements JPAPaging {
   }
 
   public static class JPAPageBuilder {
-
+    private int aProva=1;
     private int pageSize;
     private int startPage;
     private int nextPage;
