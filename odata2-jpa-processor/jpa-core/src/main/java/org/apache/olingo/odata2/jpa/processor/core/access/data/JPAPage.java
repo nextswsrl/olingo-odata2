@@ -26,7 +26,7 @@ import javax.persistence.Query;
 import org.apache.olingo.odata2.jpa.processor.api.access.JPAPaging;
 
 public class JPAPage implements JPAPaging {
-
+  private int prova;
   private int pageSize;
   private int startPage;
   private int nextPage;
