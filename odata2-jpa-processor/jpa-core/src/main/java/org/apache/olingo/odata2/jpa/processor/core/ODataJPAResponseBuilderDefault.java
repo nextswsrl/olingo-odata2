@@ -446,7 +446,7 @@ public final class ODataJPAResponseBuilderDefault implements ODataJPAResponseBui
    * 
    * @return
    */
-  private static Integer getInlineCountForNonFilterQueryLinks(final List<Map<String, Object>> edmEntityList,
+  protected static Integer getInlineCountForNonFilterQueryLinks(final List<Map<String, Object>> edmEntityList,
       final GetEntitySetLinksUriInfo resultsView) {
     // when $skip and/or $top is present with $inlinecount, first get the total count
     Integer count = null;
@@ -479,12 +479,13 @@ public final class ODataJPAResponseBuilderDefault implements ODataJPAResponseBui
       throws ODataJPARuntimeException {
     ODataEntityProviderPropertiesBuilder entityFeedPropertiesBuilder = null;
     ODataContext context = odataJPAContext.getODataContext();
+    JPAPaging paging = odataJPAContext.getPaging();
 
     Integer count = null;
     if (resultsView.getInlineCount() != null) {
       if ((resultsView.getSkip() != null || resultsView.getTop() != null)) {
         // when $skip and/or $top is present with $inlinecount
-        count = getInlineCountForNonFilterQueryEntitySet(edmEntityList, resultsView);
+        count = getInlineCountForNonFilterQueryEntitySet(edmEntityList,paging, resultsView);
       } else {
         // In all other cases
         count = resultsView.getInlineCount() == InlineCount.ALLPAGES ? edmEntityList.size() : null;
@@ -497,7 +498,7 @@ public final class ODataJPAResponseBuilderDefault implements ODataJPAResponseBui
 
       entityFeedPropertiesBuilder =
           EntityProviderWriteProperties.serviceRoot(pathInfo.getServiceRoot());
-      JPAPaging paging = odataJPAContext.getPaging();
+
       if (odataJPAContext.getPageSize() > 0 && paging != null && paging.getNextPage() > 0) {
         String nextLink =
             serviceRoot.relativize(pathInfo.getRequestUri()).toString();
@@ -547,13 +548,16 @@ public final class ODataJPAResponseBuilderDefault implements ODataJPAResponseBui
    * This method handles $inlinecount request. It also modifies the list of results in case of
    * $inlinecount and $top/$skip combinations. Specific to Entity Set.
    */
-  private static Integer getInlineCountForNonFilterQueryEntitySet(final List<Map<String, Object>> edmEntityList,
-      final GetEntitySetUriInfo resultsView) {
+  protected static Integer getInlineCountForNonFilterQueryEntitySet(final List<Map<String, Object>> edmEntityList,
+              final JPAPaging paging, final GetEntitySetUriInfo resultsView) {
     // when $skip and/or $top is present with $inlinecount, first get the total count
     Integer count = null;
     if (resultsView.getInlineCount() == InlineCount.ALLPAGES) {
       if (resultsView.getSkip() != null || resultsView.getTop() != null) {
-        count = edmEntityList.size();
+        //count = edmEntityList.size();
+        //parte che ho aggiunto io per il count che prende il count dal JpaPage
+        // che dovrebbe essere popolato in altro posto
+        count=(int) paging.getTotalEntities();
         // Now update the list
         if (resultsView.getSkip() != null) {
           // Index checks to avoid IndexOutOfBoundsException

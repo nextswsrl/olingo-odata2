@@ -18,24 +18,29 @@
  ******************************************************************************/
 package org.apache.olingo.odata2.jpa.processor.core.access.data;
 
+import org.apache.olingo.odata2.jpa.processor.api.access.JPAPaging;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Query;
 
-import org.apache.olingo.odata2.jpa.processor.api.access.JPAPaging;
+
 
 public class JPAPage implements JPAPaging {
 
   private int pageSize;
   private int startPage;
   private int nextPage;
+  private long totalEntities;
   private List<Object> pagedEntries;
 
-  protected JPAPage(final int startPage, final int nextPage, final List<Object> pagedEntities, final int pageSize) {
+
+  protected JPAPage(final int startPage, final int nextPage,final long totalEntities,
+                    final List<Object> pagedEntities, final int pageSize) {
     this.pageSize = pageSize;
     this.startPage = startPage;
     this.nextPage = nextPage;
+    this.totalEntities=totalEntities;
     pagedEntries = pagedEntities;
   }
 
@@ -50,6 +55,12 @@ public class JPAPage implements JPAPaging {
   }
 
   @Override
+  public long getTotalEntities() {
+    return totalEntities;
+  }
+
+
+  @Override
   public int getNextPage() {
     return nextPage;
   }
@@ -61,14 +72,15 @@ public class JPAPage implements JPAPaging {
 
   public static class JPAPageBuilder {
 
-    private int aProva=1;
     private int pageSize;
     private int startPage;
     private int nextPage;
+    private long totalEntities;
     private int top = -1;
     private int skip;
     private int skipToken;
     private Query query;
+    private Query countQuery;
     private List<Object> entities;
     private List<Object> pagedEntities;
 
@@ -88,6 +100,11 @@ public class JPAPage implements JPAPaging {
       this.query = query;
       return this;
     }
+    public JPAPageBuilder countQuery(final Query query) {
+      this.countQuery = countQuery;
+      return this;
+    }
+
 
     public JPAPage build() {
       if (entities != null) {
@@ -107,7 +124,7 @@ public class JPAPage implements JPAPaging {
         pagedEntities.add(entities.get(i++));
       }
       formulateNextPage();
-      return new JPAPage(startPage, nextPage, pagedEntities, pageSize);
+      return new JPAPage(startPage, nextPage,pagedEntities.size(), pagedEntities, pageSize);
     }
 
     @SuppressWarnings("unchecked")
@@ -116,8 +133,14 @@ public class JPAPage implements JPAPaging {
       query.setFirstResult(topSkip.skip);
       query.setMaxResults(topSkip.top);
       pagedEntities = query.getResultList();
+      if (countQuery!=null) {
+        totalEntities = (Long) countQuery.getSingleResult();
+      } else {
+        //todo da togliere
+        totalEntities=30;
+      }
       formulateNextPage();
-      return new JPAPage(startPage, nextPage, pagedEntities, pageSize);
+      return new JPAPage(startPage, nextPage,totalEntities, pagedEntities, pageSize);
     }
 
     private TopSkip formulateTopSkip() {

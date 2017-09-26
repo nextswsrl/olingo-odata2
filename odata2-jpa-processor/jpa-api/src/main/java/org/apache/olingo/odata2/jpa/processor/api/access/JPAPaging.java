@@ -25,6 +25,8 @@ public interface JPAPaging {
 
   public List<Object> getPagedEntities();
 
+  public long getTotalEntities();
+
   public int getNextPage();
 
   public int getStartPage();
