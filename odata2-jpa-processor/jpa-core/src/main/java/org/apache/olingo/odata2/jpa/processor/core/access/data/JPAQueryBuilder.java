@@ -49,6 +49,7 @@ import org.apache.olingo.odata2.jpa.processor.api.model.JPAEdmMapping;
 
 public class JPAQueryBuilder {
 
+
   enum UriInfoType {
     GetEntitySet,
     GetEntity,
@@ -68,14 +69,14 @@ public class JPAQueryBuilder {
 
   public JPAQueryInfo build(GetEntitySetUriInfo uriInfo) throws ODataJPARuntimeException {
     JPAQueryInfo queryInfo = new JPAQueryInfo();
-    Query query = null;
+    String queryString=null;
     try {
       ODataJPATombstoneEntityListener listener = getODataJPATombstoneEntityListener((UriInfo) uriInfo);
       if (listener != null) {
-        query = listener.getQuery(uriInfo, em);
+        queryString = listener.getQueryString(uriInfo, em);
       }
-      if (query == null) {
-        query = buildQuery((UriInfo) uriInfo, UriInfoType.GetEntitySet);
+      if (queryString == null) {
+        queryString = buildQueryString((UriInfo) uriInfo, UriInfoType.GetEntitySet);
       } else {
         queryInfo.setTombstoneQuery(true);
       }
@@ -83,8 +84,23 @@ public class JPAQueryBuilder {
       throw ODataJPARuntimeException.throwException(
           ODataJPARuntimeException.ERROR_JPQL_QUERY_CREATE, e);
     }
-    queryInfo.setQuery(query);
+    //queryInfo.setQuery(query);
+    createQueriesForEntitySet(queryInfo,queryString);
     return queryInfo;
+  }
+
+  /**Create the query for result and the queryCount for pagination and put it in {@link JPAQueryInfo}
+   *
+   * @param queryInfo
+   * @param queryString
+   */
+  protected void createQueriesForEntitySet(JPAQueryInfo queryInfo, String queryString){
+    Query query=em.createQuery(queryString);
+    queryInfo.setQuery(query);
+    //calculate count query
+    String countQueryString="select count('*') FROM "+queryString.split("(?i)FROM")[1];
+    Query countQuery=em.createQuery(countQueryString);
+    queryInfo.setCountQuery(countQuery);
   }
 
   public Query build(GetEntityUriInfo uriInfo) throws ODataJPARuntimeException {
@@ -172,7 +188,13 @@ public class JPAQueryBuilder {
     return query;
   }
 
-  private Query buildQuery(UriInfo uriParserResultView, UriInfoType type)
+  protected Query buildQuery(UriInfo uriParserResultView, UriInfoType type)
+          throws ODataJPARuntimeException, EdmException, ODataJPAModelException {
+    return em.createQuery(normalizeMembers(em, buildQueryString(uriParserResultView,type)));
+  }
+
+
+  protected String buildQueryString(UriInfo uriParserResultView, UriInfoType type)
       throws EdmException,
       ODataJPAModelException, ODataJPARuntimeException {
 
@@ -180,7 +202,7 @@ public class JPAQueryBuilder {
     JPQLContext jpqlContext = buildJPQLContext(contextType, uriParserResultView);
     JPQLStatement jpqlStatement = JPQLStatement.createBuilder(jpqlContext).build();
 
-    return em.createQuery(normalizeMembers(em, jpqlStatement.toString()));
+    return jpqlStatement.toString();
   }
 
   
@@ -242,7 +264,7 @@ public class JPAQueryBuilder {
   private static final Pattern VALUE_NORM_PATTERN = Pattern.compile("(?:^|\\s|\\()'(([^']*)')");
   private static final Pattern JOIN_ALIAS_PATTERN = Pattern.compile(".*\\sJOIN\\s(\\S*\\s\\S*).*");
 
-  private static String normalizeMembers(EntityManager em, String jpqlQuery) {  
+  protected static String normalizeMembers(EntityManager em, String jpqlQuery) {
     
     //check if clause values are string with x.y.z format
     //starting with quotes;
@@ -318,7 +340,7 @@ public class JPAQueryBuilder {
    * It will replace those values with parameters before checking for normalization 
    * and later added back
    * */
-  private static String checkConditionValues(String jpqlQuery) {
+  protected static String checkConditionValues(String jpqlQuery) {
     int i=0;
     StringBuffer query= new StringBuffer();
     query.append(jpqlQuery);
@@ -344,7 +366,7 @@ public class JPAQueryBuilder {
    * @return true if at least one embedded attribute is found or false if non embedded
    * attribute is found.
    */
-  private static boolean containsEmbeddedAttributes(EntityManager em, String jpqlQuery) {
+  protected static boolean containsEmbeddedAttributes(EntityManager em, String jpqlQuery) {
     Set<EntityType<?>> types = em.getMetamodel().getEntities();
     int pos = jpqlQuery.indexOf("FROM ") + 5;
     int lastpos = jpqlQuery.indexOf(" ", pos);
@@ -363,7 +385,7 @@ public class JPAQueryBuilder {
     return false;
   }
 
-  private static int ordinalIndexOf(String str, char s, int n) {
+  protected static int ordinalIndexOf(String str, char s, int n) {
     int pos = str.indexOf(s, 0);
     while (n-- > 0 && pos != -1) {
       pos = str.indexOf(s, pos + 1);
@@ -371,24 +393,24 @@ public class JPAQueryBuilder {
     return pos;
   }
 
-  final class JPAQueryInfo {
-    private Query query = null;
-    private boolean isTombstoneQuery = false;
-
-    public Query getQuery() {
-      return query;
-    }
-
-    public void setQuery(Query query) {
-      this.query = query;
-    }
-
-    public boolean isTombstoneQuery() {
-      return isTombstoneQuery;
-    }
-
-    public void setTombstoneQuery(boolean isTombstoneQuery) {
-      this.isTombstoneQuery = isTombstoneQuery;
-    }
-  }
+//  final class JPAQueryInfo {
+//    private Query query = null;
+//    private boolean isTombstoneQuery = false;
+//
+//    public Query getQuery() {
+//      return query;
+//    }
+//
+//    public void setQuery(Query query) {
+//      this.query = query;
+//    }
+//
+//    public boolean isTombstoneQuery() {
+//      return isTombstoneQuery;
+//    }
+//
+//    public void setTombstoneQuery(boolean isTombstoneQuery) {
+//      this.isTombstoneQuery = isTombstoneQuery;
+//    }
+//  }
 }

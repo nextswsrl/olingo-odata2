@@ -323,6 +323,8 @@ public class JPAProcessorImplTest {
     EasyMock.expect(em.createQuery("SELECT E1 FROM SalesOrderHeaders E1")).andStubReturn(getQuery());
     EasyMock.expect(em.createQuery("SELECT COUNT ( E1 ) FROM SalesOrderHeaders E1")).andStubReturn(
         getQueryForSelectCount());
+    EasyMock.expect(em.createQuery("select count('*') FROM  SalesOrderHeaders E1")).andStubReturn(
+            getQueryForSelectCountSingleResult());
     EasyMock.expect(em.getTransaction()).andStubReturn(getLocalTransaction()); // For Delete
     EasyMock.expect(em.isOpen()).andReturn(false);
     em.flush();
@@ -519,6 +521,13 @@ public class JPAProcessorImplTest {
   private Query getQueryForSelectCount() {
     Query query = EasyMock.createMock(Query.class);
     EasyMock.expect(query.getResultList()).andStubReturn(getResultListForSelectCount());
+    EasyMock.replay(query);
+    return query;
+  }
+
+  private Query getQueryForSelectCountSingleResult() {
+    Query query = EasyMock.createMock(Query.class);
+    EasyMock.expect(query.getSingleResult()).andStubReturn(11L);
     EasyMock.replay(query);
     return query;
   }

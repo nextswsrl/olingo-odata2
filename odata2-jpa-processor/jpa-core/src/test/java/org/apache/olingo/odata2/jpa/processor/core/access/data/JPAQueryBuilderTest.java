@@ -63,7 +63,7 @@ import org.apache.olingo.odata2.jpa.processor.api.ODataJPAContext;
 import org.apache.olingo.odata2.jpa.processor.api.ODataJPAQueryExtensionEntityListener;
 import org.apache.olingo.odata2.jpa.processor.api.jpql.JPQLContextType;
 import org.apache.olingo.odata2.jpa.processor.api.model.JPAEdmMapping;
-import org.apache.olingo.odata2.jpa.processor.core.access.data.JPAQueryBuilder.JPAQueryInfo;
+import org.apache.olingo.odata2.jpa.processor.core.access.data.JPAQueryInfo;
 import org.apache.olingo.odata2.jpa.processor.core.access.data.JPAQueryBuilder.UriInfoType;
 import org.apache.olingo.odata2.jpa.processor.core.common.ODataJPATestConstants;
 import org.apache.olingo.odata2.jpa.processor.core.mock.ODataContextMock;

@@ -50,6 +50,16 @@ public abstract class ODataJPATombstoneEntityListener {
    */
   public abstract Query getQuery(GetEntitySetUriInfo resultsView, EntityManager em) throws ODataJPARuntimeException;
 
+  /** Create a JPQL string from {@link GetEntitySetUriInfo}
+   *
+   * @param resultsView
+   * @param em
+   * @return
+   * @throws ODataJPARuntimeException
+   */
+  public abstract String getQueryString(GetEntitySetUriInfo resultsView, EntityManager em)
+          throws ODataJPARuntimeException;
+
   /**
    * Implement this method to create a delta token.
    * @param deltas is list of delta JPA Entities

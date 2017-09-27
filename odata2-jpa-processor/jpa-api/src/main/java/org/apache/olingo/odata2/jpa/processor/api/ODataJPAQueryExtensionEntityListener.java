@@ -45,6 +45,14 @@ public abstract class ODataJPAQueryExtensionEntityListener extends ODataJPATombs
    * @return an instance of type {@link javax.persistence.Query}
    */
   public Query getQuery(GetEntitySetUriInfo uriInfo, EntityManager em) throws ODataJPARuntimeException {
+    String queryString=getQueryString(uriInfo,em);
+    if (queryString!=null){
+      return em.createQuery(queryString);
+    }
+    return null;
+  }
+
+  public String getQueryString(GetEntitySetUriInfo resultsView, EntityManager em) throws ODataJPARuntimeException {
     return null;
   }
 

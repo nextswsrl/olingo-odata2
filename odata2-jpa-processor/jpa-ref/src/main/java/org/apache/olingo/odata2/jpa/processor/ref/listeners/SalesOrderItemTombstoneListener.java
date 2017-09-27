@@ -38,7 +38,7 @@ import org.apache.olingo.odata2.jpa.processor.api.jpql.JPQLStatement;
 public class SalesOrderItemTombstoneListener extends ODataJPATombstoneEntityListener {
 
   @Override
-  public Query getQuery(final GetEntitySetUriInfo resultsView, final EntityManager em) {
+  public String getQueryString(final GetEntitySetUriInfo resultsView, final EntityManager em) {
     JPQLContextType contextType = null;
 
     try {
@@ -52,7 +52,7 @@ public class SalesOrderItemTombstoneListener extends ODataJPATombstoneEntityList
       JPQLStatement jpqlStatement = JPQLStatement.createBuilder(jpqlContext).build();
       String deltaToken = ODataJPATombstoneContext.getDeltaToken();
 
-      Query query = null;
+      String query = null;
       if (deltaToken != null) {
         String statement = jpqlStatement.toString();
         String[] statementParts = statement.split(JPQLStatement.KEYWORD.WHERE);
@@ -68,9 +68,7 @@ public class SalesOrderItemTombstoneListener extends ODataJPATombstoneEntityList
                   + JPQLStatement.DELIMITER.SPACE + deltaCondition;
         }
 
-        query = em.createQuery(statement);
       } else {
-        query = em.createQuery(jpqlStatement.toString());
       }
 
       return query;
@@ -79,6 +77,20 @@ public class SalesOrderItemTombstoneListener extends ODataJPATombstoneEntityList
     } catch (ODataJPAModelException e) {
       return null;
     } catch (ODataJPARuntimeException e) {
+      return null;
+    }
+  }
+
+  @Override
+  public Query getQuery(GetEntitySetUriInfo resultsView, EntityManager em) throws ODataJPARuntimeException {
+    try{
+      String queryString=getQueryString(resultsView,em);
+      if (queryString!=null){
+        return em.createQuery(queryString);
+      } else {
+        return null;
+      }
+    }catch (Exception e){
       return null;
     }
   }

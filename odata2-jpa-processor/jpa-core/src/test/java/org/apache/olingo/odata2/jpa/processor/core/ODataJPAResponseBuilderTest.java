@@ -279,6 +279,11 @@ public class ODataJPAResponseBuilderTest extends JPAEdmTestModelView {
       }
 
       @Override
+      public long getTotalEntities() {
+        return 0;
+      }
+
+      @Override
       public int getPageSize() {
         return 10;
       }

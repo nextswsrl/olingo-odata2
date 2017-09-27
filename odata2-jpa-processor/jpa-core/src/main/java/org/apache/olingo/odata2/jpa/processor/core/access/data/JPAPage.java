@@ -100,7 +100,7 @@ public class JPAPage implements JPAPaging {
       this.query = query;
       return this;
     }
-    public JPAPageBuilder countQuery(final Query query) {
+    public JPAPageBuilder countQuery(final Query countQuery) {
       this.countQuery = countQuery;
       return this;
     }
@@ -135,9 +135,6 @@ public class JPAPage implements JPAPaging {
       pagedEntities = query.getResultList();
       if (countQuery!=null) {
         totalEntities = (Long) countQuery.getSingleResult();
-      } else {
-        //todo da togliere
-        totalEntities=30;
       }
       formulateNextPage();
       return new JPAPage(startPage, nextPage,totalEntities, pagedEntities, pageSize);

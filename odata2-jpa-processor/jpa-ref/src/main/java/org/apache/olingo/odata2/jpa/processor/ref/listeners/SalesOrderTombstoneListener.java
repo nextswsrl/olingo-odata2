@@ -27,6 +27,7 @@ import javax.persistence.Query;
 import org.apache.olingo.odata2.api.uri.info.GetEntitySetUriInfo;
 import org.apache.olingo.odata2.jpa.processor.api.ODataJPATombstoneContext;
 import org.apache.olingo.odata2.jpa.processor.api.ODataJPATombstoneEntityListener;
+import org.apache.olingo.odata2.jpa.processor.api.exception.ODataJPARuntimeException;
 import org.apache.olingo.odata2.jpa.processor.ref.model.SalesOrderHeader;
 
 public class SalesOrderTombstoneListener extends ODataJPATombstoneEntityListener {
@@ -53,6 +54,11 @@ public class SalesOrderTombstoneListener extends ODataJPATombstoneEntityListener
 
   @Override
   public Query getQuery(final GetEntitySetUriInfo resultsView, final EntityManager em) {
+    return null;
+  }
+
+  @Override
+  public String getQueryString(GetEntitySetUriInfo resultsView, EntityManager em) throws ODataJPARuntimeException {
     return null;
   }
 
