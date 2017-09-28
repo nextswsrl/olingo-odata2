@@ -488,7 +488,8 @@ public final class ODataJPAResponseBuilderDefault implements ODataJPAResponseBui
         count = getInlineCountForNonFilterQueryEntitySet(edmEntityList,paging, resultsView);
       } else {
         // In all other cases
-        count = resultsView.getInlineCount() == InlineCount.ALLPAGES ? edmEntityList.size() : null;
+        //count = resultsView.getInlineCount() == InlineCount.ALLPAGES ? edmEntityList.size() : null;
+        count = resultsView.getInlineCount() == InlineCount.ALLPAGES ? (int) paging.getTotalEntities() : null;
       }
     }
 
@@ -561,17 +562,18 @@ public final class ODataJPAResponseBuilderDefault implements ODataJPAResponseBui
         // Now update the list
         if (resultsView.getSkip() != null) {
           // Index checks to avoid IndexOutOfBoundsException
-          if (resultsView.getSkip() > edmEntityList.size()) {
+          if (resultsView.getSkip() > count) {
             edmEntityList.clear();
             return count;
           }
-          edmEntityList.subList(0, resultsView.getSkip()).clear();
+         // edmEntityList.subList(0, resultsView.getSkip()).clear();
         }
-        if (resultsView.getTop() != null && resultsView.getTop() >= 0 && resultsView.getTop() < edmEntityList.size()) {
-          final List<Map<String, Object>> edmEntitySubList =
-              new ArrayList<Map<String, Object>>(edmEntityList.subList(0, resultsView.getTop()));
-          edmEntityList.retainAll(edmEntitySubList);
-        }
+//        if (resultsView.getTop() != null && resultsView.getTop() >= 0
+//            && resultsView.getTop() < edmEntityList.size()) {
+//          final List<Map<String, Object>> edmEntitySubList =
+//              new ArrayList<Map<String, Object>>(edmEntityList.subList(0, resultsView.getTop()));
+//          edmEntityList.retainAll(edmEntitySubList);
+//        }
       }
     }// Inlinecount of None is handled by default - null
     return count;
