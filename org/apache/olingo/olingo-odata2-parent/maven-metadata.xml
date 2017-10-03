@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>org.apache.olingo</groupId>
+  <artifactId>olingo-odata2-parent</artifactId>
+  <versioning>
+    <versions>
+      <version>2.0.10-NEXT-SNAPSHOT</version>
+    </versions>
+    <lastUpdated>20171003075918</lastUpdated>
+  </versioning>
+</metadata>
