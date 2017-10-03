@@ -4,8 +4,8 @@
   <artifactId>olingo-odata2-lib</artifactId>
   <versioning>
     <versions>
-      <version>2.0.10-SNAPSHOT</version>
+      <version>2.0.10-NEXT-SNAPSHOT</version>
     </versions>
-    <lastUpdated>20171002153623</lastUpdated>
+    <lastUpdated>20171003073446</lastUpdated>
   </versioning>
 </metadata>
