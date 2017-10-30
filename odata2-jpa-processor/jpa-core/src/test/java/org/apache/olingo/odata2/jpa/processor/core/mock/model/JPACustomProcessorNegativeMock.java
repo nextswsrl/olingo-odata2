@@ -28,17 +28,19 @@ import org.apache.olingo.odata2.api.annotation.edm.EdmFunctionImportParameter;
 public class JPACustomProcessorNegativeMock {
 
   @EdmFunctionImport(name = "Method5", entitySet = "MockSet", returnType = @ReturnType(type = Type.ENTITY,
-      isCollection = false))
+          formatResult = EdmFunctionImport.FormatResult.SINGLE_OBJECT))
   public List<JPACustomProcessorNegativeMock> method5() {
     return null;
   }
 
-  @EdmFunctionImport(entitySet = "MockSet", returnType = @ReturnType(type = Type.SIMPLE, isCollection = true))
+  @EdmFunctionImport(entitySet = "MockSet",
+          returnType = @ReturnType(type = Type.SIMPLE, formatResult = EdmFunctionImport.FormatResult.COLLECTION))
   public void method6() {
     return;
   }
 
-  @EdmFunctionImport(returnType = @ReturnType(type = Type.SIMPLE, isCollection = true), entitySet = "MockSet")
+  @EdmFunctionImport(returnType =
+  @ReturnType(type = Type.SIMPLE, formatResult = EdmFunctionImport.FormatResult.COLLECTION), entitySet = "MockSet")
   public JPACustomProcessorNegativeMock method8() {
     return null;
   }

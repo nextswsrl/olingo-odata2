@@ -94,7 +94,7 @@ public class JPAQueryBuilder {
    * @param queryInfo
    * @param queryString
    */
-  protected void createQueriesForEntitySet(JPAQueryInfo queryInfo, String queryString){
+  public void createQueriesForEntitySet(JPAQueryInfo queryInfo, String queryString){
     Query query=em.createQuery(queryString);
     queryInfo.setQuery(query);
     //calculate count query

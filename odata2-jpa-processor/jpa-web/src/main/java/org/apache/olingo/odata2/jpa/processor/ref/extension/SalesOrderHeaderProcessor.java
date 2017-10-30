@@ -46,7 +46,7 @@ public class SalesOrderHeaderProcessor {
 
   @SuppressWarnings("unchecked")
   @EdmFunctionImport(name = "FindAllSalesOrders", entitySet = "SalesOrders", returnType = @ReturnType(
-      type = Type.ENTITY, isCollection = true))
+      type = Type.ENTITY, formatResult = EdmFunctionImport.FormatResult.COLLECTION))
   public List<SalesOrderHeader> findAllSalesOrders(
       @EdmFunctionImportParameter(name = "DeliveryStatusCode",
           facets = @EdmFacets(maxLength = 2)) final String status) {
@@ -59,7 +59,7 @@ public class SalesOrderHeaderProcessor {
     return soList;
   }
 
-  @EdmFunctionImport(name = "CheckATP", returnType = @ReturnType(type = Type.SIMPLE, isCollection = false),
+  @EdmFunctionImport(name = "CheckATP", returnType = @ReturnType(type = Type.SIMPLE, formatResult = EdmFunctionImport.FormatResult.SINGLE_OBJECT),
       httpMethod = HttpMethod.GET)
   public boolean checkATP(
       @EdmFunctionImportParameter(name = "SoID", facets = @EdmFacets(nullable = false)) final Long soID,
@@ -71,7 +71,7 @@ public class SalesOrderHeaderProcessor {
     }
   }
 
-  @EdmFunctionImport(returnType = @ReturnType(type = Type.ENTITY, isCollection = false), entitySet = "SalesOrders")
+  @EdmFunctionImport(returnType = @ReturnType(type = Type.ENTITY, formatResult = EdmFunctionImport.FormatResult.SINGLE_OBJECT), entitySet = "SalesOrders")
   public SalesOrderHeader calculateNetAmount(
       @EdmFunctionImportParameter(name = "SoID", facets = @EdmFacets(nullable = false)) final Long soID)
       throws ODataException {

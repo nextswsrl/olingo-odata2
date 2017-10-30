@@ -35,12 +35,20 @@ public class EdmTypedImplProv extends EdmNamedImplProv implements EdmTyped {
   protected EdmType edmType;
   private FullQualifiedName typeName;
   private EdmMultiplicity multiplicity;
+  private boolean paginated;
 
   public EdmTypedImplProv(final EdmImplProv edm, final String name, final FullQualifiedName typeName,
       final EdmMultiplicity multiplicity) throws EdmException {
     super(edm, name);
     this.typeName = typeName;
     this.multiplicity = multiplicity;
+    this.paginated=false;
+  }
+
+  public EdmTypedImplProv(final EdmImplProv edm, final String name, final FullQualifiedName typeName,
+                          final EdmMultiplicity multiplicity, final boolean paginated) throws EdmException {
+    this(edm, name, typeName, multiplicity);
+    this.paginated=paginated;
   }
 
   @Override
@@ -67,5 +75,10 @@ public class EdmTypedImplProv extends EdmNamedImplProv implements EdmTyped {
   @Override
   public EdmMultiplicity getMultiplicity() throws EdmException {
     return multiplicity;
+  }
+
+  @Override
+  public boolean isPaginated(){
+    return paginated;
   }
 }

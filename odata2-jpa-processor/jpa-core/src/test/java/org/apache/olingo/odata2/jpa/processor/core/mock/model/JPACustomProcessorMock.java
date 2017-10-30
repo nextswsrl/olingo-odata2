@@ -34,7 +34,7 @@ public class JPACustomProcessorMock {
   public static final String nonJPAEmbeddableType = "JPACustomProcessorMock$JPANonComplexTestMock";
 
   @EdmFunctionImport(name = "Method1", entitySet = "MockSet", returnType = @ReturnType(type = Type.ENTITY,
-      isCollection = true))
+      formatResult = EdmFunctionImport.FormatResult.COLLECTION))
   public List<JPACustomProcessorMock> method1(@EdmFunctionImportParameter(name = "Param1", facets = @EdmFacets(
       nullable = true,
       maxLength = 2)) final String param1, final int param2, @EdmFunctionImportParameter(name = "Param3",
@@ -43,7 +43,7 @@ public class JPACustomProcessorMock {
   }
 
   @EdmFunctionImport(name = "Method2", entitySet = "MockSet", returnType = @ReturnType(type = Type.ENTITY,
-      isCollection = true))
+          formatResult = EdmFunctionImport.FormatResult.COLLECTION))
   public List<JPACustomProcessorMock> method2(
       @EdmFunctionImportParameter(facets = @EdmFacets(maxLength = 2), name = "Param2") final String param2) {
     return new ArrayList<JPACustomProcessorMock>();
@@ -55,25 +55,25 @@ public class JPACustomProcessorMock {
   }
 
   @EdmFunctionImport(returnType = @ReturnType(type = Type.ENTITY,
-      isCollection = false), entitySet = "MockSet")
+          formatResult = EdmFunctionImport.FormatResult.SINGLE_OBJECT), entitySet = "MockSet")
   public JPACustomProcessorMock method7() {
     return null;
   }
 
   @EdmFunctionImport(returnType = @ReturnType(type = Type.COMPLEX,
-      isCollection = false))
+          formatResult = EdmFunctionImport.FormatResult.SINGLE_OBJECT))
   public JPACustomProcessorMock method9() {
     return null;
   }
 
   @EdmFunctionImport(returnType = @ReturnType(type = Type.COMPLEX,
-      isCollection = true))
+          formatResult = EdmFunctionImport.FormatResult.COLLECTION))
   public List<JPACustomProcessorMock> method10() {
     return null;
   }
 
   @EdmFunctionImport(returnType = @ReturnType(type = Type.COMPLEX,
-      isCollection = false))
+          formatResult = EdmFunctionImport.FormatResult.SINGLE_OBJECT))
   public JPANonComplexTestMock method18() {
     return null;
   }

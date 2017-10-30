@@ -126,7 +126,8 @@ public class EdmFunctionImportImplProv extends EdmNamedImplProv implements EdmFu
       final ReturnType returnType = functionImport.getReturnType();
       if (returnType != null) {
         edmReturnType =
-            new EdmTypedImplProv(edm, functionImport.getName(), returnType.getTypeName(), returnType.getMultiplicity());
+            new EdmTypedImplProv(edm, functionImport.getName(), returnType.getTypeName(),
+                    returnType.getMultiplicity(), returnType.isPaginated());
       }
     }
     return edmReturnType;

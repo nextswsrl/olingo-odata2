@@ -102,8 +102,24 @@ public class JPAProcessorImpl implements JPAProcessor {
       if (uriParserResultView.getFunctionImport().getReturnType()
           .getMultiplicity().equals(EdmMultiplicity.MANY)) {
 
-        resultObj = (List<Object>) method.invoke(
-            jpaMethodContext.getEnclosingObject(), args);
+        if (uriParserResultView.getFunctionImport().getReturnType().isPaginated()){
+          Object result = (Object) method.invoke(
+                  jpaMethodContext.getEnclosingObject(), args);
+          if (JPAQueryInfo.class.isAssignableFrom(result.getClass())){
+            JPAQueryInfo queryInfo= (JPAQueryInfo) result;
+            resultObj = handlePaging(queryInfo.getQuery(), queryInfo.getCountQuery(),
+                    (GetEntitySetUriInfo) uriParserResultView);
+          } else {
+            throw ODataJPARuntimeException
+                    .throwException(ODataJPARuntimeException.GENERAL
+                            .addContent("FunctionImport " + uriParserResultView.getFunctionImport().getName() +
+                                    " declared paginated return a non JPAQueryInfo result"),
+                            new IllegalStateException());
+          }
+        }else {
+          resultObj = (List<Object>) method.invoke(
+                  jpaMethodContext.getEnclosingObject(), args);
+        }
       } else {
         resultObj = new ArrayList<Object>();
         Object result = method.invoke(

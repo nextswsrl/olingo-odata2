@@ -233,11 +233,13 @@ public class JPAEdmFunctionImport extends JPAEdmBaseViewImpl implements JPAEdmFu
         org.apache.olingo.odata2.api.edm.provider.ReturnType functionReturnType =
             new org.apache.olingo.odata2.api.edm.provider.ReturnType();
 
-        if (returnType.isCollection()) {
+        if (returnType.formatResult().isCollection()) {
           functionReturnType.setMultiplicity(EdmMultiplicity.MANY);
         } else {
           functionReturnType.setMultiplicity(EdmMultiplicity.ONE);
         }
+
+        functionReturnType.setPaginated(returnType.formatResult().isPaginated());
 
         if (returnType.type() == ReturnType.Type.ENTITY) {
           String entitySet = edmAnnotationFunctionImport.entitySet();
@@ -255,10 +257,14 @@ public class JPAEdmFunctionImport extends JPAEdmBaseViewImpl implements JPAEdmFu
         switch (returnType.type()) {
         case ENTITY:
           EntityType edmEntityType = null;
-          if (returnType.isCollection() == false) {
-            edmEntityType = jpaEdmEntityTypeView.searchEdmEntityType(methodReturnType.getSimpleName());
+          if (returnType.EdmEntityTypeName().equals("")) {
+            if (returnType.formatResult().isCollection() == false) {
+              edmEntityType = jpaEdmEntityTypeView.searchEdmEntityType(methodReturnType.getSimpleName());
+            } else {
+              edmEntityType = jpaEdmEntityTypeView.searchEdmEntityType(getReturnTypeSimpleName(method));
+            }
           } else {
-            edmEntityType = jpaEdmEntityTypeView.searchEdmEntityType(getReturnTypeSimpleName(method));
+            edmEntityType= jpaEdmEntityTypeView.searchEdmEntityType(returnType.EdmEntityTypeName());
           }
 
           if (edmEntityType == null) {
@@ -277,7 +283,7 @@ public class JPAEdmFunctionImport extends JPAEdmBaseViewImpl implements JPAEdmFu
           ComplexType complexType = null;
           boolean exists = false;
 
-          if (returnType.isCollection() == false) {
+          if (returnType.formatResult().isCollection() == false) {
             embeddableTypeName = methodReturnType.getName();
           } else {
             embeddableTypeName = getReturnTypeName(method);

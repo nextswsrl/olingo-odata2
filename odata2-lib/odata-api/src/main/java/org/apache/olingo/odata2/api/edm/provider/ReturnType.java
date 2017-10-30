@@ -29,6 +29,7 @@ public class ReturnType {
 
   private FullQualifiedName typeName;
   private EdmMultiplicity multiplicity;
+  private boolean isPaginated;
 
   /**
    * @return {@link FullQualifiedName} type of this {@link ReturnType}
@@ -62,6 +63,18 @@ public class ReturnType {
   public ReturnType setMultiplicity(final EdmMultiplicity multiplicity) {
     this.multiplicity = multiplicity;
     return this;
+  }
+
+  public boolean isPaginated() {
+    return isPaginated;
+  }
+
+  /**
+   * indica se il risultato della functionImport è paginato o meno
+   * @param paginated
+   */
+  public void setPaginated(boolean paginated) {
+    isPaginated = paginated;
   }
 
   @Override

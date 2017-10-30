@@ -49,13 +49,55 @@ public @interface EdmFunctionImport {
     Type type();
 
     /**
+     *  Permette di settare l'Edm entity type name, da valorizzare solo nel caso in cui
+     *  il valore di ritorno della function import è diverso dal tipo che restituirà odata
+     * @return edm entity type
+     */
+    String EdmEntityTypeName() default "";
+
+    /**
      * Define if the return type for the function import is a collection (entity set) or
      * an single entity (entity).
      * 
      * @return <code>true</code> if a collection is returned,
      * otherwise <code>false</code> if a single entity is returned.
      */
-    boolean isCollection() default false;
+   // boolean isCollection() default false;
+
+    /**
+     * Define the format result of the function import
+     * @return
+     */
+    FormatResult formatResult() default FormatResult.SINGLE_OBJECT;
+  }
+
+  /**
+   * Identifica il formato di ritorno della function import
+   * SINGLE_OBJECT -> La Function Import deve tornare un singolo Object
+   * COLLECTION -> La Function Import deve tornare una collection
+   * PAGINATED_COLLECTION -> La Function Import deve tornare un oggetto
+   *              di tipo {@link org.apache.olingo.odata2.jpa.processor.core.access.data.JPAQueryInfo}
+   */
+  enum FormatResult {
+    SINGLE_OBJECT(false, false),
+    COLLECTION(true, false),
+    PAGINATED_COLLECTION(true, true);
+
+    boolean isCollection;
+    boolean isPaginated;
+
+    FormatResult(boolean isCollection, boolean isPaginated) {
+      this.isCollection = isCollection;
+      this.isPaginated = isPaginated;
+    }
+
+    public boolean isCollection() {
+      return isCollection;
+    }
+
+    public boolean isPaginated() {
+      return isPaginated;
+    }
   }
 
   /**

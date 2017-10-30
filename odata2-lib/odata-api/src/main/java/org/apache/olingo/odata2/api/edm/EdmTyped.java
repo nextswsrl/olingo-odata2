@@ -40,4 +40,6 @@ public interface EdmTyped extends EdmNamed {
    * @throws EdmException
    */
   EdmMultiplicity getMultiplicity() throws EdmException;
+
+  boolean isPaginated();
 }
