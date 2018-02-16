@@ -18,6 +18,7 @@
  ******************************************************************************/
 package org.apache.olingo.odata2.api.uri;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -233,6 +234,13 @@ public interface UriInfo extends GetServiceDocumentUriInfo,
    */
   @Override
   public Map<String, EdmLiteral> getFunctionImportParameters();
+
+  /**
+   *
+   * @return il payload della request
+   */
+  @Override
+  public InputStream getFunctionImportPayload();
 
   /**
    * Gets the custom query options as Map from option names to their

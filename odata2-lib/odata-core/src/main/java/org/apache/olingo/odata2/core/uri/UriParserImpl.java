@@ -18,6 +18,7 @@
  ******************************************************************************/
 package org.apache.olingo.odata2.core.uri;
 
+import java.io.InputStream;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -108,11 +109,12 @@ public class UriParserImpl extends UriParser {
   public UriInfo parse(final List<PathSegment> pathSegments, final Map<String, String> queryParameters)
       throws UriSyntaxException, UriNotMatchingException, EdmException {
 
-    return parseAll(pathSegments, convertFromSingleMapToMultiMap(queryParameters));
+    return parseAll(pathSegments, convertFromSingleMapToMultiMap(queryParameters), null);
   }
 
   @Override
-  public UriInfo parseAll(final List<PathSegment> pathSegments, final Map<String, List<String>> allQueryParameters)
+  public UriInfo parseAll(final List<PathSegment> pathSegments, final Map<String, List<String>> allQueryParameters,
+                          InputStream payload)
       throws UriSyntaxException, UriNotMatchingException, EdmException {
 
     this.pathSegments = copyPathSegmentList(pathSegments);
@@ -128,8 +130,15 @@ public class UriParserImpl extends UriParser {
     checkSystemQueryOptionsCompatibility();
     handleSystemQueryOptions();
     handleOtherQueryParameters();
+    handleContent(payload);
 
     return uriResult;
+  }
+
+
+  private void handleContent(InputStream content){
+    uriResult.setFunctionImportPayload(content
+    );
   }
 
   private <T, K> Map<T, List<K>> convertFromSingleMapToMultiMap(final Map<T, K> singleMap) {

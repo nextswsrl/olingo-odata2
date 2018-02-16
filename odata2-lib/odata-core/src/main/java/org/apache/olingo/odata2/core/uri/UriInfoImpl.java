@@ -18,6 +18,7 @@
  ******************************************************************************/
 package org.apache.olingo.odata2.core.uri;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -69,6 +70,9 @@ public class UriInfoImpl implements UriInfo {
   private List<SelectItem> select = Collections.emptyList();
   private Map<String, EdmLiteral> functionImportParameters = Collections.emptyMap();
   private Map<String, String> customQueryOptions = Collections.emptyMap();
+
+  //il body (payload) della request
+  private InputStream functionImportPayload;
 
   public UriType getUriType() {
     return uriType;
@@ -284,6 +288,15 @@ public class UriInfoImpl implements UriInfo {
   @Override
   public Map<String, EdmLiteral> getFunctionImportParameters() {
     return functionImportParameters;
+  }
+
+  @Override
+  public InputStream getFunctionImportPayload() {
+    return functionImportPayload;
+  }
+
+  public void setFunctionImportPayload(InputStream functionImportContent) {
+    this.functionImportPayload = functionImportContent;
   }
 
   @Override

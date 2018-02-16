@@ -86,7 +86,7 @@ public class UriParserTest extends BaseTest {
         MockFacade.getPathSegmentsAsODataPathSegmentMock(Arrays.asList(path[0].split("/", -1)));
     final Map<String, List<String>> queryParameters = getQueryParameters(path.length == 2 ? unescape(path[1]) : "");
 
-    return (UriInfoImpl) new UriParserImpl(edm).parseAll(pathSegments, queryParameters);
+    return (UriInfoImpl) new UriParserImpl(edm).parseAll(pathSegments, queryParameters, null);
   }
 
   private Map<String, List<String>> getQueryParameters(final String uri) {

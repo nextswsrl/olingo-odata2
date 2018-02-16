@@ -18,6 +18,7 @@
  ******************************************************************************/
 package org.apache.olingo.odata2.api.uri;
 
+import java.io.InputStream;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
@@ -71,14 +72,16 @@ public abstract class UriParser {
    * Parses path segments and query parameters.
    * Throws an exception if there are redundant system query parameters.
    * 
-   * @param pathSegments list of path segments
    * @param queryParameters query parameters
+   * @param pathSegments list of path segments
+   * @param payload payload della request
    * @return {@link UriInfo} information about the parsed URI
    * @throws UriSyntaxException
    * @throws UriNotMatchingException
    * @throws EdmException
    */
-  public abstract UriInfo parseAll(List<PathSegment> pathSegments, Map<String, List<String>> allQueryParameters)
+  public abstract UriInfo parseAll(List<PathSegment> pathSegments, Map<String, List<String>> allQueryParameters,
+                                   InputStream payload)
       throws UriSyntaxException, UriNotMatchingException, EdmException;
   
   /**

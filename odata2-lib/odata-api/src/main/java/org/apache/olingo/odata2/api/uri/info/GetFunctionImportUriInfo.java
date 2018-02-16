@@ -18,6 +18,7 @@
  ******************************************************************************/
 package org.apache.olingo.odata2.api.uri.info;
 
+import java.io.InputStream;
 import java.util.Map;
 
 import org.apache.olingo.odata2.api.edm.EdmFunctionImport;
@@ -57,4 +58,10 @@ public interface GetFunctionImportUriInfo {
    * @return Map of {@literal <String, String>} custom query options
    */
   public Map<String, String> getCustomQueryOptions();
+
+  /**
+   * Gets the function import content body of the request
+   * @return
+   */
+  public InputStream getFunctionImportPayload();
 }
