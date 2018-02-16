@@ -31,7 +31,7 @@ import org.apache.olingo.odata2.core.edm.EdmSimpleTypeFacadeImpl;
  */
 public class EdmParameterImplProv extends EdmElementImplProv implements EdmParameter, EdmAnnotatable {
 
-  FunctionImportParameter parameter;
+  protected FunctionImportParameter parameter;
   private EdmAnnotations annotations;
 
   public EdmParameterImplProv(final EdmImplProv edm, final FunctionImportParameter parameter) throws EdmException {
@@ -57,5 +57,9 @@ public class EdmParameterImplProv extends EdmElementImplProv implements EdmParam
       annotations = new EdmAnnotationsImplProv(parameter.getAnnotationAttributes(), parameter.getAnnotationElements());
     }
     return annotations;
+  }
+
+  public FunctionImportParameter getParameter() {
+    return parameter;
   }
 }

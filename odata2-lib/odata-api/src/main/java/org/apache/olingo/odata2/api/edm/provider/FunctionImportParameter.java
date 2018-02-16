@@ -29,14 +29,14 @@ import org.apache.olingo.odata2.api.edm.EdmSimpleTypeKind;
  */
 public class FunctionImportParameter {
 
-  private String name;
-  private String mode;
-  private EdmSimpleTypeKind type;
-  private EdmFacets facets;
-  private Mapping mapping;
-  private Documentation documentation;
-  private List<AnnotationAttribute> annotationAttributes;
-  private List<AnnotationElement> annotationElements;
+  protected String name;
+  protected String mode;
+  protected EdmSimpleTypeKind type;
+  protected EdmFacets facets;
+  protected Mapping mapping;
+  protected Documentation documentation;
+  protected List<AnnotationAttribute> annotationAttributes;
+  protected List<AnnotationElement> annotationElements;
 
   /**
    * @return <b>String</b> name of the parameter

@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -25,18 +25,15 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 
 import org.apache.olingo.odata2.api.annotation.edm.EdmFunctionImport;
 import org.apache.olingo.odata2.api.annotation.edm.EdmFunctionImport.ReturnType;
 import org.apache.olingo.odata2.api.annotation.edm.EdmFunctionImportParameter;
+import org.apache.olingo.odata2.api.annotation.edm.EdmFunctionImportParameterPayload;
 import org.apache.olingo.odata2.api.edm.EdmMultiplicity;
 import org.apache.olingo.odata2.api.edm.EdmSimpleTypeKind;
-import org.apache.olingo.odata2.api.edm.provider.ComplexType;
-import org.apache.olingo.odata2.api.edm.provider.EntityType;
-import org.apache.olingo.odata2.api.edm.provider.Facets;
-import org.apache.olingo.odata2.api.edm.provider.FunctionImport;
-import org.apache.olingo.odata2.api.edm.provider.FunctionImportParameter;
-import org.apache.olingo.odata2.api.edm.provider.Mapping;
+import org.apache.olingo.odata2.api.edm.provider.*;
 import org.apache.olingo.odata2.jpa.processor.api.access.JPAEdmBuilder;
 import org.apache.olingo.odata2.jpa.processor.api.exception.ODataJPAModelException;
 import org.apache.olingo.odata2.jpa.processor.api.exception.ODataJPARuntimeException;
@@ -172,6 +169,7 @@ public class JPAEdmFunctionImport extends JPAEdmBaseViewImpl implements JPAEdmFu
       return null;
     }
 
+
     private void buildEdmParameter(final FunctionImport functionImport, final Method method)
         throws ODataJPAModelException {
       Annotation[][] annotations = method.getParameterAnnotations();
@@ -218,7 +216,32 @@ public class JPAEdmFunctionImport extends JPAEdmBaseViewImpl implements JPAEdmFu
             functionImportParameter.setMapping((Mapping) mapping);
             funcImpList.add(functionImportParameter);
           }
+            //payload custom impl
+          if (element instanceof EdmFunctionImportParameterPayload){
+            EdmFunctionImportParameterPayload edmFunctionImportParameterPayload =
+                (EdmFunctionImportParameterPayload)element;
+            //controllo se il tipo restituito è supportato
+            if (!edmFunctionImportParameterPayload.type().getTypeManaged().isAssignableFrom(parameterType)) {
+                throw ODataJPAModelException.throwException(
+                        ODataJPAModelException.TYPE_NOT_SUPPORTED.addContent(parameterTypes, method.getName()), null);
+            }
+            FunctionImportParameterPayload functionImportParameterPayload=new FunctionImportParameterPayload();
+            if (edmFunctionImportParameterPayload.name().equals("")) {
+             // functionImportParameterPayload.setName(UUID.randomUUID().toString().replaceAll("-",""));
+              throw ODataJPAModelException.throwException(ODataJPAModelException.FUNC_PARAM_NAME_EXP.addContent(method
+                      .getDeclaringClass().getName(), method.getName()), null);
+            } else {
+              functionImportParameterPayload.setName(edmFunctionImportParameterPayload.name());
+            }
+            functionImportParameterPayload.setType(EdmSimpleTypeKind.Binary);
+            mapping = new JPAEdmMappingImpl();
+            mapping.setJPAType(parameterType);
+            functionImportParameterPayload.setMapping((Mapping) mapping);
+            functionImportParameterPayload.setEdmFunctionImportPayloadType(edmFunctionImportParameterPayload.type());
+            funcImpList.add(functionImportParameterPayload);
+          }
         }
+
       }
       if (!funcImpList.isEmpty()) {
         functionImport.setParameters(funcImpList);

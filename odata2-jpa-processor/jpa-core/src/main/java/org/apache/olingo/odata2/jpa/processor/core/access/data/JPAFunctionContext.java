@@ -18,6 +18,8 @@
  ******************************************************************************/
 package org.apache.olingo.odata2.jpa.processor.core.access.data;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
@@ -26,6 +28,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.olingo.odata2.api.annotation.edm.EdmFunctionImportPayloadType;
 import org.apache.olingo.odata2.api.edm.EdmException;
 import org.apache.olingo.odata2.api.edm.EdmFacets;
 import org.apache.olingo.odata2.api.edm.EdmFunctionImport;
@@ -35,7 +38,10 @@ import org.apache.olingo.odata2.api.edm.EdmMapping;
 import org.apache.olingo.odata2.api.edm.EdmParameter;
 import org.apache.olingo.odata2.api.edm.EdmSimpleType;
 import org.apache.olingo.odata2.api.edm.EdmSimpleTypeException;
+import org.apache.olingo.odata2.api.edm.provider.FunctionImportParameterPayload;
+import org.apache.olingo.odata2.api.exception.MessageReference;
 import org.apache.olingo.odata2.api.uri.info.GetFunctionImportUriInfo;
+import org.apache.olingo.odata2.core.edm.provider.EdmParameterImplProv;
 import org.apache.olingo.odata2.jpa.processor.api.access.JPAFunction;
 import org.apache.olingo.odata2.jpa.processor.api.access.JPAMethodContext;
 import org.apache.olingo.odata2.jpa.processor.api.exception.ODataJPAModelException;
@@ -114,14 +120,31 @@ public class JPAFunctionContext extends JPAMethodContext {
           EdmLiteral literal = edmArguments.get(paramName);
           EdmParameter parameter = functionImport.getParameter(paramName);
           JPAEdmMapping mapping = (JPAEdmMapping) parameter.getMapping();
-          args[i++] = convertArgument(literal, parameter.getFacets(), mapping.getJPAType());
+          //se payload custom impl
+          if (((EdmParameterImplProv) parameter).getParameter() instanceof FunctionImportParameterPayload ){
+            args[i++] = convertPayloadArgument(functionView.getFunctionImportPayload(),
+                    (EdmFunctionImportPayloadType)
+                            ((FunctionImportParameterPayload)((EdmParameterImplProv) parameter).getParameter())
+                            .getEdmFunctionImportPayloadType(),mapping.getJPAType()) ;
+          } else {
+            args[i++] = convertArgument(literal, parameter.getFacets(), mapping.getJPAType());
+          }
         }
         return args;
       }
-
     }
 
-    private Object convertArgument(final EdmLiteral edmLiteral, final EdmFacets facets, final Class<?> targetType)
+    protected Object convertPayloadArgument(InputStream payload,
+                                            EdmFunctionImportPayloadType edmFunctionImportPayloadType,
+                                            Class<?> targetType) throws EdmException {
+      try {
+        return edmFunctionImportPayloadType.convert(payload,targetType);
+      } catch (IOException e) {
+        throw new EdmException(EdmException.COMMON,e,"Exception on convert payload");
+      }
+    }
+
+    protected Object convertArgument(final EdmLiteral edmLiteral, final EdmFacets facets, final Class<?> targetType)
         throws EdmSimpleTypeException {
       Object value = null;
       if (edmLiteral != null) {
