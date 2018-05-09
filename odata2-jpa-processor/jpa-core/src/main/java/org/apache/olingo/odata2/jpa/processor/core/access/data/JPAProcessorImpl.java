@@ -77,6 +77,10 @@ public class JPAProcessorImpl implements JPAProcessor {
     return new JPAQueryBuilder(oDataJPAContext);
   }
 
+  protected JPALink getJpaLink() {
+    return new JPALink(oDataJPAContext);
+  }
+
   protected void additionalOperationOnJPAMethodContext(JPAMethodContext jpaMethodContext){
 
   }
@@ -309,7 +313,7 @@ public class JPAProcessorImpl implements JPAProcessor {
   public void process(final PostUriInfo uriInfo,
       final InputStream content, final String requestContentType, final String contentType)
       throws ODataJPARuntimeException, ODataJPAModelException {
-    JPALink link = new JPALink(oDataJPAContext);
+    JPALink link = getJpaLink();
     link.create(uriInfo, content, requestContentType, contentType);
     link.save();
   }
@@ -319,7 +323,7 @@ public class JPAProcessorImpl implements JPAProcessor {
       final InputStream content, final String requestContentType, final String contentType)
       throws ODataJPARuntimeException, ODataJPAModelException {
 
-    JPALink link = new JPALink(oDataJPAContext);
+    JPALink link = getJpaLink();
     link.update(putUriInfo, content, requestContentType, contentType);
     link.save();
 
@@ -419,7 +423,7 @@ public class JPAProcessorImpl implements JPAProcessor {
   }
 
   protected Object deleteLink(final DeleteUriInfo uriParserResultView) throws ODataJPARuntimeException {
-    JPALink link = new JPALink(oDataJPAContext);
+    JPALink link = getJpaLink();
     link.delete(uriParserResultView);
     link.save();
     return link.getTargetJPAEntity();
