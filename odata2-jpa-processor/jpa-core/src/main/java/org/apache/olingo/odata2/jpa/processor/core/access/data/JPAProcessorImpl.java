@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -286,15 +286,15 @@ public class JPAProcessorImpl implements JPAProcessor {
     if (selectedObject != null) {
 
       em.remove(selectedObject);
-      em.flush();
-      if (isLocalTransaction) {
+        flush();
+        if (isLocalTransaction) {
         oDataJPAContext.getODataJPATransaction().commit();
       }
     }
     return selectedObject;
   }
 
-  /* Process Get Entity Link Request */
+    /* Process Get Entity Link Request */
   @Override
   public Object process(final GetEntityLinkUriInfo uriParserResultView)
       throws ODataJPAModelException, ODataJPARuntimeException {
@@ -408,8 +408,8 @@ public class JPAProcessorImpl implements JPAProcessor {
       } else {
         return null;
       }
-      em.flush();
-      if (isLocalTransaction) {
+        flush();
+        if (isLocalTransaction) {
         oDataJPAContext.getODataJPATransaction().commit();
       }
     } catch (ODataBadRequestException e) {
@@ -485,6 +485,10 @@ public class JPAProcessorImpl implements JPAProcessor {
 
     return page.getPagedEntities();
 
+  }
+
+  protected void flush() {
+      em.flush();
   }
 
   protected boolean setTransaction() {
